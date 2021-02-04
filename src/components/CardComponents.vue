@@ -36,6 +36,7 @@
         :disabled="IndividualItem.title === ''"
         class="submit_button"
         v-focus
+        type="submit"
       >
         <slot> Add Your Things</slot>
       </button>

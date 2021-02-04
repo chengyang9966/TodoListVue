@@ -44,6 +44,7 @@
         @method="CloseDialog"
       ></CardComponent>
     </div>
+
     <button @click="OpenDialog()" class="btn-default float">
       <span class="my-float">+</span>
     </button>
@@ -55,7 +56,7 @@ import moment from "moment";
 import { mapState } from "vuex";
 import store from "../Store/store";
 import * as type from "../Store/types";
-import CardComponent from "./CardComponents";
+import CardComponent from "../components/CardComponents";
 export default {
   name: "TodoList",
   components: {
