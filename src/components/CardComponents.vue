@@ -31,14 +31,13 @@
         />
       </div>
       <button
-        :disabled="
-          IndividualItem.title === '' ||
-            this.DefaultValue === IndividualItem.title
-        "
-        @click="Submit(IndividualItem)"
+        @mouseup="submit(IndividualItem)"
+        @click="submit(IndividualItem)"
+        :disabled="IndividualItem.title === ''"
         class="submit_button"
+        v-focus
       >
-        Add Your Things
+        <slot> Add Your Things</slot>
       </button>
     </div>
   </div>
@@ -66,8 +65,12 @@ export default {
       return state.individualItem;
     }
   }),
-  created() {
-    this.DefaultValue = IndividualItem.Title;
+  directives: {
+    focus: {
+      inserted: function(el) {
+        el.focus();
+      }
+    }
   },
   methods: {
     method() {
@@ -76,7 +79,7 @@ export default {
         type: Types.cancelCard
       });
     },
-    Submit(IndividualItem) {
+    submit(IndividualItem) {
       this.$emit("method");
       store.dispatch({
         type: Types.EditTodoCard,
@@ -160,15 +163,11 @@ export default {
   color: white;
   border: none;
 }
-
-.onHold_button {
-  display: block;
-  margin: auto;
-  width: 60%;
-  padding: 10px;
-  background-color: #d3d3d3;
-  color: white;
-  border: none;
+.submit_button:hover,
+.submit_button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .submit_button:disabled {

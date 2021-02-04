@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <header>
+      <slot name="header"></slot>
+    </header>
     <div class="innerDiv">
       <h1>{{ msg }}</h1>
       <input
