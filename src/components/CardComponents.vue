@@ -27,18 +27,17 @@
           class="todo-input"
           autocomplete="on"
           :min="TodayDate"
-          v-model="TodayDate"
+          v-model="IndividualItem.DueTime"
         />
       </div>
       <button
         @mouseup="submit(IndividualItem)"
-        @click="submit(IndividualItem)"
         :disabled="IndividualItem.title === ''"
         class="submit_button"
         v-focus
         type="submit"
       >
-        <slot> Add Your Things</slot>
+        Add Your Things
       </button>
     </div>
   </div>
@@ -66,6 +65,7 @@ export default {
       return state.individualItem;
     }
   }),
+
   directives: {
     focus: {
       inserted: function(el) {
@@ -97,9 +97,19 @@ export default {
   padding: 10px 18px;
   font-size: 18px;
   margin-bottom: 16px;
+  color: rgb(255, 255, 255);
+  border: 1px solid #ccc;
+  background-color: #161d6f;
+  border: 1px solid #161d6f;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+  outline: 0;
+  -webkit-appearance: none;
 }
 .todo-input:focus {
   outline: 0;
+  border-color: #339933;
 }
 /* Card Component */
 .modal {
@@ -119,7 +129,7 @@ export default {
   display: block;
   position: fixed;
   z-index: 2;
-  padding-top: 100px;
+  padding-top: 160px;
   left: 0;
   top: 0;
   width: 100%;
@@ -131,10 +141,11 @@ export default {
 
 /* Modal Content */
 .modal-content {
-  background-color: #fefefe;
+  background-color: #595b83;
   margin: auto;
   padding: 20px;
-  border: 1px solid #888;
+  border-radius: 20px;
+  border: 1px solid #595b83;
   width: 80%;
 }
 .Input_Div {
@@ -147,6 +158,8 @@ export default {
   float: right;
   font-size: 28px;
   font-weight: bold;
+  background-color: #595b83;
+  border: 1px solid #595b83;
 }
 
 .close:hover,
@@ -160,13 +173,14 @@ export default {
   margin: auto;
   width: 60%;
   padding: 10px;
-  background-color: #970e0e;
+  background-color: #0a043c;
   color: white;
-  border: none;
+  border: 1px solid #0a043c;
+  border-radius: 15px;
 }
 .submit_button:hover,
 .submit_button:focus {
-  color: black;
+  color: #80ffdb;
   text-decoration: none;
   cursor: pointer;
 }
@@ -174,6 +188,7 @@ export default {
 .submit_button:disabled {
   outline: 0;
   background-color: #d3d3d3;
+  border: 1px solid #d3d3d3;
   color: black;
 }
 </style>

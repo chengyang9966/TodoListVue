@@ -5,3 +5,7 @@ export const editTodo = "editTodo";
 export const removeTodo = "removeTodo";
 export const cancelCard = "cancelCard";
 export const EditTodoCard = "EditTodoCard";
+export const completeTasks = "completeTasks";
+export const Completed = "Completed";
+export const Active = "Active";
+export const All = "All";

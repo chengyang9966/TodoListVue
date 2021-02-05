@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -8,12 +7,14 @@ const store = new Vuex.Store({
     newTodo: "",
     beforeEdit: "",
     idForTodo: 3,
+    TotalItem: 1,
     individualItem: {
       id: "",
       title: "",
       description: "",
       completed: false,
-      editing: false
+      editing: false,
+      DueTime: ""
     },
     todos: [
       {
@@ -21,23 +22,28 @@ const store = new Vuex.Store({
         title: "Test Database",
         description: "This is a test",
         completed: false,
-        editing: false
+        editing: false,
+        DueTime: ""
       },
       {
         id: 2,
         title: "Test Database 12",
         description: "",
-        completed: false,
-        editing: false
+        completed: true,
+        editing: false,
+        DueTime: ""
       },
       {
         id: 3,
         title: "Test Database",
         description: "",
         completed: false,
-        editing: false
+        editing: false,
+        DueTime: ""
       }
-    ]
+    ],
+    Completed: [],
+    Active: []
   },
 
   //Reducer
@@ -102,13 +108,45 @@ const store = new Vuex.Store({
         }
       }));
     },
+    completeTasks(state, payload) {
+      return (state.todos = state.todos.map(x => {
+        if (x.id === payload.action.id) {
+          return payload.action;
+        } else {
+          return x;
+        }
+      }));
+    },
     removeTodo(state, payload) {
       return (state.todos = state.todos.filter(x => x.id !== payload.action));
     },
     cancelCard(state) {
       return (state.todos = state.todos);
+    },
+    Active(state) {
+      return (
+        (state.Active = state.todos.filter(x => !x.completed)),
+        (state.Completed = []),
+        (state.TotalItem = 0)
+      );
+    },
+    All(state) {
+      return (
+        (state.Active = []),
+        (state.Completed = []),
+        (state.TotalItem = state.todos.length)
+      );
+    },
+    Completed(state) {
+      return (
+        (state.Completed = state.todos.filter(x => x.completed)),
+        (state.Active = []),
+        (state.TotalItem = 0)
+      );
     }
   },
+
+  //action
   actions: {
     addTodo(context, payload) {
       context.commit("addTodo", payload);
@@ -124,6 +162,18 @@ const store = new Vuex.Store({
     },
     EditTodoCard(context, payload) {
       context.commit("EditTodoCard", payload);
+    },
+    completeTasks(context, payload) {
+      context.commit("completeTasks", payload);
+    },
+    Active(context) {
+      context.commit("Active");
+    },
+    Completed(context) {
+      context.commit("Completed");
+    },
+    All(context) {
+      context.commit("All");
     },
     cancelCard(context) {
       context.commit("cancelCard");
