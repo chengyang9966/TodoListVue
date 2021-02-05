@@ -31,13 +31,12 @@
         />
       </div>
       <button
+        @click="submit(IndividualItem)"
         @mouseup="submit(IndividualItem)"
         :disabled="IndividualItem.title === ''"
         class="submit_button"
-        v-focus
-        type="submit"
       >
-        Add Your Things
+        {{ Title }} Your Things
       </button>
     </div>
   </div>
@@ -81,11 +80,27 @@ export default {
       });
     },
     submit(IndividualItem) {
-      this.$emit("method");
-      store.dispatch({
-        type: Types.EditTodoCard,
-        action: IndividualItem
-      });
+      console.log(
+        "🚀 ~ file: CardComponents.vue ~ line 84 ~ submit ~ IndividualItem",
+        IndividualItem
+      );
+      switch (this.Title) {
+        case "Add":
+          IndividualItem.id = IndividualItem.id + 1;
+          store.dispatch({
+            type: Types.addTodo,
+            action: IndividualItem
+          });
+          this.$emit("method");
+          break;
+        case "Edit":
+          this.$emit("method");
+          store.dispatch({
+            type: Types.EditTodoCard,
+            action: IndividualItem
+          });
+          break;
+      }
     }
   }
 };

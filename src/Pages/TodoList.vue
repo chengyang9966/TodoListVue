@@ -17,7 +17,8 @@
               type="checkbox"
               @click="completeTasks(todo)"
               :class="{
-                checkboxComplete: todo.completed
+                checkboxComplete: todo.completed,
+                CompletedTasks: TotalItem === 'Completed'
               }"
             >
               <div
@@ -30,18 +31,19 @@
           </div>
 
           <div
-            v-if="!todo.editing"
             @dblclick="editTodo(todo)"
-            class="todo-item-label"
-            :class="{ completed: todo.completed }"
+            class="todo_item_label"
+            :class="{
+              completed: TotalItem === 'Completed' ? false : todo.completed
+            }"
           >
             {{ todo.title }}
           </div>
 
           <CardComponent
             Title="Edit"
-            :Click="todo.editing"
-            @method="doneEdit(todo)"
+            :Click="SetNewItem"
+            @method="SetCloseDialog"
           />
         </div>
         <div
@@ -52,7 +54,7 @@
           &times;
         </div>
       </div>
-      <CardComponent Title="Add" :Click="SetNewItem" @method="CloseDialog" />
+      <CardComponent Title="Add" :Click="OpenDialog" @method="CloseDialog" />
 
       <div class="CountItem">
         {{ Todos.filter(x => !x.completed).length }}{{ " "
@@ -69,18 +71,17 @@
           class="IndividualBtn"
           @click="All()"
           :class="{
-            ActiveButton: TotalItem > 0
+            ActiveButton: TotalItem === 'All'
           }"
         >
           All
         </div>
         <div
           @click="Active()"
+          :disable="DisableStatus === 'Active'"
           class="IndividualBtn"
           :class="{
-            ActiveButton:
-              Todos.filter(x => !x.completed).length === Todos.length &&
-              TotalItem === 0
+            ActiveButton: TotalItem === 'Active'
           }"
         >
           Active
@@ -89,17 +90,13 @@
           @click="Completed()"
           class="IndividualBtn"
           :class="{
-            ActiveButton: Todos.filter(x => x.completed).length === Todos.length
+            ActiveButton: TotalItem === 'Completed'
           }"
         >
           Completed
         </div>
       </div>
     </div>
-
-    <button @click="OpenDialog()" class="btn-default float">
-      <span class="my-float">+</span>
-    </button>
   </div>
 </template>
 
@@ -111,6 +108,9 @@ import * as type from "../Store/types";
 import CardComponent from "../components/CardComponents";
 export default {
   name: "TodoList",
+  props: {
+    OpenDialog: Boolean
+  },
   components: {
     CardComponent
   },
@@ -128,6 +128,10 @@ export default {
       },
       TotalItem: function(state) {
         return state.TotalItem;
+      },
+      DisableStatus: function(state) {
+        console.log(this.$store.state.DisableStatus);
+        return state.DisableStatus;
       }
     })
   },
@@ -165,6 +169,7 @@ export default {
     editTodo(todo) {
       this.beforeEdit = todo.title;
       todo.editing = true;
+      this.SetNewItem = true;
       store.dispatch({
         type: type.editTodo,
         action: todo
@@ -180,9 +185,6 @@ export default {
       });
     },
     doneEdit(todo) {
-      if (todo.title.trim().length === 0) {
-        todo.title = this.beforeEdit;
-      }
       todo.editing = false;
     },
     removeTodo(id) {
@@ -192,7 +194,7 @@ export default {
       });
     },
     completeTasks(todo) {
-      console.log(todo);
+      // console.log(todo);
       todo.completed = !todo.completed;
       store.dispatch({
         type: type.completeTasks,
@@ -215,14 +217,12 @@ export default {
       });
     },
     // add new item
-    OpenDialog() {
-      this.SetNewItem = true;
-    },
+
     CloseDialog() {
-      this.SetNewItem = false;
+      this.$emit("CloseDialog");
     },
-    onChildClick(value) {
-      this.SetNewItem = value;
+    SetCloseDialog() {
+      this.SetNewItem = false;
     }
   }
 };
@@ -280,7 +280,9 @@ a {
   top: 6px;
   width: 28px;
 }
-
+.CompletedTasks {
+  display: none;
+}
 .labelComplete {
   border: 2px solid #fff;
   border-top: none;
@@ -338,11 +340,15 @@ a {
   display: flex;
   justify-content: center;
 }
-.todo-item-label {
+.todo_item_label {
   padding: 10px;
   margin-left: 30px;
+  color: #fff;
 }
-.todo-item-label:hover {
+.CompletedTasksTitle {
+  color: #fff;
+}
+.todo_item_label:hover {
   color: #80ffdb;
 }
 
@@ -359,47 +365,12 @@ a {
   color: #bbbfca;
 }
 
-/* button */
-.float {
-  text-decoration: none;
-  position: fixed;
-  width: 60px;
-  height: 60px;
-  bottom: 40px;
-  right: 40px;
-  border-radius: 50px;
-  text-align: center;
-  border: none;
-  /* box-shadow: 2px 2px 3px #999; */
-}
 .checkbox {
   border-radius: 50%;
   width: 100px;
   height: 100px;
   background-color: red;
   display: inline-block;
-}
-.my-float {
-  font-size: 50px;
-}
-.btn-default {
-  color: #fff;
-  background-color: #0c9;
-}
-.btn-default:focus,
-.btn-default.focus {
-  color: #fff;
-  background-color: #08aa74;
-}
-.btn-default:hover {
-  color: #fff;
-  background-color: #08aa74;
-}
-.btn-default:active,
-.btn-default.active,
-.open > .dropdown-toggle.btn-default {
-  color: #fff;
-  background-color: #08aa74;
 }
 
 /* footer */
@@ -425,4 +396,25 @@ a {
 .ActiveButton {
   color: white;
 }
+
+/* @media only screen and (min-width: 600px) {
+  h1 {
+    font: 14px sans-serif;
+  }
+  .DateTime {
+    display: block;
+  }
+  .todoItem {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  .todo_item_label {
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 10px;
+    width: 100px;
+    text-overflow: ellipsis;
+  }
+} */
 </style>

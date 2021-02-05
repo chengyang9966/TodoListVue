@@ -7,7 +7,7 @@ const store = new Vuex.Store({
     newTodo: "",
     beforeEdit: "",
     idForTodo: 3,
-    TotalItem: 1,
+    TotalItem: "",
     individualItem: {
       id: "",
       title: "",
@@ -43,20 +43,25 @@ const store = new Vuex.Store({
       }
     ],
     Completed: [],
-    Active: []
+    Active: [],
+    DisableStatus: ""
   },
 
   //Reducer
   mutations: {
     addTodo(state, payload) {
-      if (payload.action.title == "") {
-        return state;
-      } else {
-        return (
-          (state.todos = [...state.todos, payload.action]),
-          (state.idForTodo = state.idForTodo + 1)
-        );
-      }
+      return (
+        (state.todos = [...state.todos, payload.action]),
+        (state.idForTodo = state.idForTodo + 1),
+        (state.individualItem = {
+          id: "",
+          title: "",
+          description: "",
+          completed: false,
+          editing: false,
+          DueTime: ""
+        })
+      );
     },
     editTodo(state, payload) {
       if (payload.action.completed == true) {
@@ -96,52 +101,59 @@ const store = new Vuex.Store({
       );
     },
     EditTodoCard(state, payload) {
-      console.log(
-        "🚀 ~ file: store.js ~ line 93 ~ EditTodoCard ~ payload",
-        payload
+      return (
+        (state.individualItem = {
+          id: "",
+          title: "",
+          description: "",
+          completed: false,
+          editing: false,
+          DueTime: ""
+        }),
+        (state.todos = state.todos.map(x => {
+          if (x.id === payload.action.id) {
+            return payload.action;
+          } else {
+            return x;
+          }
+        }))
       );
-      return (state.todos = state.todos.map(x => {
-        if (x.id === payload.action.id) {
-          return payload.action;
-        } else {
-          return x;
-        }
-      }));
     },
     completeTasks(state, payload) {
-      return (state.todos = state.todos.map(x => {
-        if (x.id === payload.action.id) {
-          return payload.action;
-        } else {
-          return x;
-        }
-      }));
+      return (
+        (state.Active = state.Active.filter(x => x.id !== payload.action.id)),
+        (state.todos = state.todos.map(x => {
+          if (x.id === payload.action.id) {
+            return payload.action;
+          } else {
+            return x;
+          }
+        }))
+      );
     },
     removeTodo(state, payload) {
       return (state.todos = state.todos.filter(x => x.id !== payload.action));
     },
     cancelCard(state) {
-      return (state.todos = state.todos);
+      return (state.todos = state.todos), (state.individualItem = {});
     },
     Active(state) {
       return (
         (state.Active = state.todos.filter(x => !x.completed)),
         (state.Completed = []),
-        (state.TotalItem = 0)
+        (state.TotalItem = "Active")
       );
     },
     All(state) {
       return (
-        (state.Active = []),
-        (state.Completed = []),
-        (state.TotalItem = state.todos.length)
+        (state.Active = []), (state.Completed = []), (state.TotalItem = "All")
       );
     },
     Completed(state) {
       return (
         (state.Completed = state.todos.filter(x => x.completed)),
         (state.Active = []),
-        (state.TotalItem = 0)
+        (state.TotalItem = "Completed")
       );
     }
   },
