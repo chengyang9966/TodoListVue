@@ -1,11 +1,7 @@
 <template>
   <div id="app">
     <img class="logo" src="./assets/logo.png" />
-    <TodoList
-      v-if="!mobileView"
-      :OpenDialog="SetNewItem"
-      @CloseDialog="CloseDialog"
-    />
+    <TodoList :OpenDialog="SetNewItem" @CloseDialog="CloseDialog" />
     <button @click="OpenDialog()" class="btn-default float">
       <span class="my-float">+</span>
     </button>
@@ -16,28 +12,17 @@
 import TodoList from "./Pages/TodoList";
 
 export default {
-  data: () => {
-    return {
-      mobileView: true,
-      showNav: false
-    };
-  },
   name: "App",
   components: {
     TodoList
   },
-  created() {
-    this.handleView();
-  },
+
   data() {
     return {
       SetNewItem: false
     };
   },
   methods: {
-    handleView() {
-      this.mobileView = window.innerWidth <= 800;
-    },
     OpenDialog() {
       this.SetNewItem = true;
     },
@@ -101,5 +86,29 @@ body {
 .open > .dropdown-toggle.btn-default {
   color: #fff;
   background-color: #08aa74;
+}
+@media only screen and (max-width: 400px) {
+  #app {
+    margin-top: 0px;
+  }
+  .float {
+    width: 40px;
+    height: 40px;
+  }
+  .my-float {
+    font-size: 30px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  #app {
+    margin-top: 0px;
+  }
+  .float {
+    width: 50px;
+    height: 50px;
+  }
+  .my-float {
+    font-size: 40px;
+  }
 }
 </style>

@@ -206,4 +206,14 @@ export default {
   border: 1px solid #d3d3d3;
   color: black;
 }
+@media only screen and (max-width: 600px) {
+  .Input_Div {
+    margin-left: 35px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .Input_Div {
+    margin-left: 15px;
+  }
+}
 </style>

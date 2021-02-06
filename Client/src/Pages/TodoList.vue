@@ -39,6 +39,9 @@
           >
             {{ todo.title }}
           </div>
+          <div class="Day">
+            {{ getDay(todo.DueTime) }}
+          </div>
 
           <CardComponent
             Title="Edit"
@@ -63,7 +66,7 @@
             ? "Remaning Tasks"
             : "Remaning Task"
         }}
-        <div class="CountTime">{{ TodayTime }}</div>
+        <div class="CountTime">{{ timestamp }}</div>
       </div>
 
       <div class="CountItem ">
@@ -114,6 +117,9 @@ export default {
   components: {
     CardComponent
   },
+  created() {
+    // setInterval(this.getNow, 1000);
+  },
   computed: {
     ...mapState({
       Todos: function(state) {
@@ -140,8 +146,8 @@ export default {
     return {
       msg: `Main Focus for today`,
       TodayDate: `${moment(new Date()).format("DD/MM/YYYY")}`,
-      TodayTime: `${moment(new Date()).format("HH:mm A")}`,
       newTodo: "",
+      timestamp: "",
       beforeEdit: "",
       SetNewItem: false,
       idForTodo: 3
@@ -156,6 +162,20 @@ export default {
   },
   methods: {
     //function
+    getNow() {
+      const today = new Date();
+      const time = today.getHours() + ":" + today.getMinutes();
+      const AM = moment(new Date()).format("A");
+      const dateTime = time + " " + AM;
+      this.timestamp = dateTime;
+    },
+    getDay(date) {
+      if (date === new Date() || date === "") {
+        return null;
+      }
+
+      return moment(date).format("ddd");
+    },
     addTodo() {
       store.dispatch({
         type: type.addTodo,
@@ -174,7 +194,6 @@ export default {
         type: type.editTodo,
         action: todo
       });
-      // this.SetNewItem = true;
     },
     cancelEdit(todo) {
       todo.editing = true;
@@ -345,6 +364,13 @@ a {
   margin-left: 30px;
   color: #fff;
 }
+.Day {
+  padding: 10px;
+  margin-left: 30px;
+  color: #fff;
+  position: relative;
+  left: 37vw;
+}
 .CompletedTasksTitle {
   color: #fff;
 }
@@ -397,7 +423,7 @@ a {
   color: white;
 }
 
-/* @media only screen and (min-width: 600px) {
+@media only screen and (max-width: 600px) {
   h1 {
     font: 14px sans-serif;
   }
@@ -406,7 +432,6 @@ a {
   }
   .todoItem {
     margin: 0;
-    padding: 0;
     margin-bottom: 10px;
   }
   .todo_item_label {
@@ -416,5 +441,12 @@ a {
     width: 100px;
     text-overflow: ellipsis;
   }
-} */
+  .CountItem {
+    margin: 20px 0px;
+  }
+  .Day {
+    margin-left: 0;
+    left: 0;
+  }
+}
 </style>
