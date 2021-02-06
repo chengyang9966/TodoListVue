@@ -1,6 +1,7 @@
 <template>
   <div id="myModal" class="modal" :class="{ modal_open: Click }">
     <!-- Modal content -->
+
     <div class="modal-content">
       <button @click="method()" class="close">
         &times;
@@ -33,7 +34,11 @@
       <button
         @click="submit(IndividualItem)"
         @mouseup="submit(IndividualItem)"
-        :disabled="IndividualItem.title === ''"
+        :disabled="
+          IndividualItem.title === '' ||
+            IndividualItem.title === null ||
+            IndividualItem.title === undefined
+        "
         class="submit_button"
       >
         {{ Title }} Your Things
@@ -80,10 +85,6 @@ export default {
       });
     },
     submit(IndividualItem) {
-      console.log(
-        "🚀 ~ file: CardComponents.vue ~ line 84 ~ submit ~ IndividualItem",
-        IndividualItem
-      );
       switch (this.Title) {
         case "Add":
           IndividualItem.id = IndividualItem.id + 1;

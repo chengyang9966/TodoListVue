@@ -5,7 +5,7 @@
     </header>
 
     <div class="innerDiv">
-      <h1>{{ msg }}</h1>
+      <h1>{{ msg }} {{ Name }}</h1>
       <div class="DateTime">
         <span>Today's tasks</span>
         <span>{{ TodayDate }}</span>
@@ -59,12 +59,15 @@
       </div>
       <CardComponent Title="Add" :Click="OpenDialog" @method="CloseDialog" />
 
-      <div class="CountItem">
+      <div
+        class="CountItem"
+        :class="{ HideCountItem: Todos.filter(x => !x.completed).length === 0 }"
+      >
         {{ Todos.filter(x => !x.completed).length }}{{ " "
         }}{{
           Todos.filter(x => !x.completed).length > 1
-            ? "Remaning Tasks"
-            : "Remaning Task"
+            ? "Remaining Tasks"
+            : "Remaining Task"
         }}
         <div class="CountTime">{{ timestamp }}</div>
       </div>
@@ -84,7 +87,8 @@
           :disable="DisableStatus === 'Active'"
           class="IndividualBtn"
           :class="{
-            ActiveButton: TotalItem === 'Active'
+            ActiveButton: TotalItem === 'Active',
+            HideCountItem: Todos.filter(x => !x.completed).length === 0
           }"
         >
           Active
@@ -118,18 +122,28 @@ export default {
     CardComponent
   },
   created() {
-    // setInterval(this.getNow, 1000);
+    setInterval(this.getNow, 1000);
   },
   computed: {
     ...mapState({
       Todos: function(state) {
         if (state.Active.length > 0) {
-          return state.Active;
+          return state.Active.sort((a, b) => {
+            b.DueTime - a.DueTime;
+          });
         }
         if (state.Completed.length > 0) {
-          return state.Completed;
+          return state.Completed.sort((a, b) => {
+            b.DueTime - a.DueTime;
+          });
         } else {
-          return state.todos;
+          return state.todos
+            .sort(function(a, b) {
+              return a.completed - b.completed;
+            })
+            .sort((a, b) => {
+              b.DueTime - a.DueTime;
+            });
         }
       },
       TotalItem: function(state) {
@@ -144,7 +158,8 @@ export default {
 
   data() {
     return {
-      msg: `Main Focus for today`,
+      msg: "",
+      Name: "Cheng Yang",
       TodayDate: `${moment(new Date()).format("DD/MM/YYYY")}`,
       newTodo: "",
       timestamp: "",
@@ -164,10 +179,13 @@ export default {
     //function
     getNow() {
       const today = new Date();
-      const time = today.getHours() + ":" + today.getMinutes();
+      const time = moment(today).format("HH:mm");
       const AM = moment(new Date()).format("A");
       const dateTime = time + " " + AM;
       this.timestamp = dateTime;
+      AM === "AM"
+        ? (this.msg = "Good Morning, ")
+        : (this.msg = "Good Evening, ");
     },
     getDay(date) {
       if (date === new Date() || date === "") {
@@ -187,13 +205,17 @@ export default {
       });
     },
     editTodo(todo) {
-      this.beforeEdit = todo.title;
-      todo.editing = true;
-      this.SetNewItem = true;
-      store.dispatch({
-        type: type.editTodo,
-        action: todo
-      });
+      if (todo.completed === true) {
+        return;
+      } else {
+        this.SetNewItem = true;
+        this.beforeEdit = todo.title;
+        todo.editing = true;
+        store.dispatch({
+          type: type.editTodo,
+          action: todo
+        });
+      }
     },
     cancelEdit(todo) {
       todo.editing = true;
@@ -213,7 +235,6 @@ export default {
       });
     },
     completeTasks(todo) {
-      // console.log(todo);
       todo.completed = !todo.completed;
       store.dispatch({
         type: type.completeTasks,
@@ -368,8 +389,8 @@ a {
   padding: 10px;
   margin-left: 30px;
   color: #fff;
-  position: relative;
-  left: 37vw;
+  position: fixed;
+  right: 18vw;
 }
 .CompletedTasksTitle {
   color: #fff;
@@ -390,6 +411,9 @@ a {
   text-decoration: line-through;
   color: #bbbfca;
 }
+.completed:hover {
+  color: #bbbfca;
+}
 
 .checkbox {
   border-radius: 50%;
@@ -406,6 +430,9 @@ a {
   align-items: center;
   justify-content: space-between;
   margin: 30px 80px;
+}
+.HideCountItem {
+  display: none;
 }
 
 .CountTime {
@@ -445,8 +472,8 @@ a {
     margin: 20px 0px;
   }
   .Day {
-    margin-left: 0;
-    left: 0;
+    position: fixed;
+    right: 20vw;
   }
 }
 </style>

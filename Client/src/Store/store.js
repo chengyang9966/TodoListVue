@@ -7,7 +7,7 @@ const store = new Vuex.Store({
     newTodo: "",
     beforeEdit: "",
     idForTodo: 3,
-    TotalItem: "",
+    TotalItem: "All",
     individualItem: {
       id: "",
       title: "",
@@ -51,6 +51,9 @@ const store = new Vuex.Store({
   mutations: {
     addTodo(state, payload) {
       return (
+        (state.TotalItem = "All"),
+        (state.Completed = []),
+        (state.Active = []),
         (state.todos = [...state.todos, payload.action]),
         (state.idForTodo = state.idForTodo + 1),
         (state.individualItem = {
@@ -68,6 +71,9 @@ const store = new Vuex.Store({
         return state;
       } else {
         return (
+          (state.TotalItem = "All"),
+          (state.Completed = []),
+          (state.Active = []),
           (state.beforeEdit = state.todos.map(x => {
             if (x.id === payload.action.id) {
               return x.title;
@@ -121,6 +127,7 @@ const store = new Vuex.Store({
     },
     completeTasks(state, payload) {
       return (
+        (state.TotalItem = "All"),
         (state.Active = state.Active.filter(x => x.id !== payload.action.id)),
         (state.todos = state.todos.map(x => {
           if (x.id === payload.action.id) {
