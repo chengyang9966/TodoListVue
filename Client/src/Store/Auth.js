@@ -103,26 +103,36 @@ const Auth = new Vuex.Store({
         context.commit("AUTH_ERROR");
       }
     },
-    register: formData => {
+    register(context, payload) {
       try {
-        const res = axios.post(`${staticLink}/api/users`, formData, Header);
+        const res = axios.post(`${staticLink}/api/users`, payload, Header);
         context.commit("REGISTER_SUCCESS", res.data);
       } catch (err) {
         context.commit("REGISTER_FAIL", err.response.data.msg);
       }
     },
-    login: formData => {
-      try {
-        const res = axios.post(`${staticLink}/api/auth`, formData, Header);
-        console.log("🚀 ", res.data);
-        context.commit("LOGIN_SUCCESS", res.data);
-        this.loadUser();
-      } catch (err) {
-        context.commit("LOGIN_FAIL", err.response.data.msg);
-      }
+    LOGIN(context, payload) {
+      return new Promise((resolve, reject) => {
+        commit("auth_request");
+        axios
+          .post(`${staticLink}/api/auth`, payload, Header)
+          .then(res => {
+            const token = res.data.token;
+
+            localStorage.setItem("token", token);
+            axios.defaults.headers.common["Authorization"] = token;
+            context.commit("LOGIN_SUCCESS", res.data);
+            resolve(res);
+          })
+          .catch(err => {
+            context.commit("LOGIN_FAIL", err.response.data.msg);
+            context.commit("LOGOUT", payload);
+            reject(err);
+          });
+      });
     },
-    logout: () => {
-      context.commit("LOGOUT");
+    LOGOUT(context, payload) {
+      context.commit("LOGOUT", payload);
     }
   }
 });

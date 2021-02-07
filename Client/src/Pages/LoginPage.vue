@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{ msg }}</h1>
+    <h1 class="msg">{{ msg }}</h1>
     <!-- <input
       class="todo-input"
       type="string"
@@ -62,13 +62,20 @@ export default {
   },
   methods: {
     submit() {
-      Auth.actions.login(this.AccountData);
+      Auth.disptach({
+        type: Types.LOGIN,
+        payload: this.AccountData
+      });
     }
   }
 };
 </script>
 
 <style>
+.msg {
+  color: white;
+  text-transform: uppercase;
+}
 .todo-input {
   width: 80%;
   padding: 10px 18px;

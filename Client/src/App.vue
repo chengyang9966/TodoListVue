@@ -1,26 +1,35 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png" />
-    <TodoList :OpenDialog="SetNewItem" @CloseDialog="CloseDialog" />
+    <!-- <LoginPage v-if="Login === false" /> -->
+    <PopUp :title="Name" :Click="SetNewItem" @method="CloseDialog" />
+    <TodoList :Name="DefaultValue" />
   </div>
 </template>
 
 <script>
 import TodoList from "./Pages/TodoList";
+import PopUp from "./components/PopUp";
 // import LoginPage from "./Pages/LoginPage";
 export default {
   name: "App",
   components: {
-    TodoList
+    TodoList,
+    PopUp
+    // LoginPage
   },
   data() {
     return {
-      SetNewItem: false
+      SetNewItem: true,
+      Name: "What is your Name?",
+      DefaultValue: ""
     };
   },
+  mounted: {},
   methods: {
-    CloseDialog() {
+    CloseDialog(Value) {
       this.SetNewItem = false;
+      this.DefaultValue = Value;
     }
   }
 };

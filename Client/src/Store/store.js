@@ -6,7 +6,7 @@ const store = new Vuex.Store({
   state: {
     newTodo: "",
     beforeEdit: "",
-    idForTodo: 3,
+    idForTodo: 1,
     TotalItem: "All",
     individualItem: {
       id: "",
@@ -16,32 +16,7 @@ const store = new Vuex.Store({
       editing: false,
       DueTime: ""
     },
-    todos: [
-      {
-        id: 1,
-        title: "Test Database",
-        description: "This is a test",
-        completed: false,
-        editing: false,
-        DueTime: ""
-      },
-      {
-        id: 2,
-        title: "Test Database 12",
-        description: "",
-        completed: true,
-        editing: false,
-        DueTime: ""
-      },
-      {
-        id: 3,
-        title: "Test Database",
-        description: "",
-        completed: false,
-        editing: false,
-        DueTime: ""
-      }
-    ],
+    todos: [],
     Completed: [],
     Active: [],
     DisableStatus: ""
