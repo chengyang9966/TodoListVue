@@ -1,31 +1,24 @@
 <template>
   <div id="app">
-    <img class="logo" src="./assets/logo.png" />
+    <img src="./assets/logo.png" />
     <TodoList :OpenDialog="SetNewItem" @CloseDialog="CloseDialog" />
-    <button @click="OpenDialog()" class="btn-default float">
-      <span class="my-float">+</span>
-    </button>
   </div>
 </template>
 
 <script>
 import TodoList from "./Pages/TodoList";
-
+// import LoginPage from "./Pages/LoginPage";
 export default {
   name: "App",
   components: {
     TodoList
   },
-
   data() {
     return {
       SetNewItem: false
     };
   },
   methods: {
-    OpenDialog() {
-      this.SetNewItem = true;
-    },
     CloseDialog() {
       this.SetNewItem = false;
     }
@@ -41,10 +34,8 @@ body {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 24px;
   text-align: center;
-
-  color: white;
+  color: #2c3e50;
   margin-top: 60px;
 }
 .logo {

@@ -1,9 +1,5 @@
 <template>
   <div class="container">
-    <header>
-      <slot name="header"></slot>
-    </header>
-
     <div class="innerDiv">
       <h1>{{ msg }} {{ Name }}</h1>
       <div class="DateTime">
@@ -104,6 +100,9 @@
         </div>
       </div>
     </div>
+    <button @click="SetOpenDialog()" class="btn-default float">
+      <span class="my-float">+</span>
+    </button>
   </div>
 </template>
 
@@ -115,9 +114,6 @@ import * as type from "../Store/types";
 import CardComponent from "../components/CardComponents";
 export default {
   name: "TodoList",
-  props: {
-    OpenDialog: Boolean
-  },
   components: {
     CardComponent
   },
@@ -164,6 +160,7 @@ export default {
       newTodo: "",
       timestamp: "",
       beforeEdit: "",
+      OpenDialog: false,
       SetNewItem: false,
       idForTodo: 3
     };
@@ -257,9 +254,12 @@ export default {
       });
     },
     // add new item
-
+    SetOpenDialog() {
+      console.log("HIi");
+      this.OpenDialog = true;
+    },
     CloseDialog() {
-      this.$emit("CloseDialog");
+      this.OpenDialog = false;
     },
     SetCloseDialog() {
       this.SetNewItem = false;
@@ -474,6 +474,18 @@ a {
   .Day {
     position: fixed;
     right: 20vw;
+  }
+}
+@media only screen and (min-width: 1000px) {
+  .Day {
+    position: fixed;
+    right: 15vw;
+  }
+}
+@media only screen and (min-width: 1500px) {
+  .Day {
+    position: fixed;
+    right: 10vw;
   }
 }
 </style>
